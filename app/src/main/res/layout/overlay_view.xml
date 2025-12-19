@@ -3,6 +3,29 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
 
+    <!-- Main FAB Button -->
+    <FrameLayout
+        android:id="@+id/btnMain"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:layout_gravity="bottom|center_horizontal"
+        android:elevation="8dp">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/bg_fab_gradient"
+            android:scaleType="fitXY"/>
+
+        <ImageView
+            android:id="@+id/iconMain"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_gravity="center"
+            android:src="@drawable/ic_mic"
+            android:tint="@color/white"/>
+    </FrameLayout>
+
     <!-- Expandable Menu Items Container -->
     <LinearLayout
         android:id="@+id/menuContainer"
@@ -11,7 +34,8 @@
         android:orientation="vertical"
         android:gravity="center_horizontal"
         android:visibility="gone"
-        android:layout_marginBottom="16dp">
+        android:layout_gravity="bottom|center_horizontal"
+        android:layout_marginBottom="80dp">
 
         <!-- Mic Switch Button -->
         <FrameLayout
@@ -119,28 +143,5 @@
         </FrameLayout>
 
     </LinearLayout>
-
-    <!-- Main FAB Button -->
-    <FrameLayout
-        android:id="@+id/btnMain"
-        android:layout_width="64dp"
-        android:layout_height="64dp"
-        android:layout_gravity="bottom|center_horizontal"
-        android:elevation="8dp">
-
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:src="@drawable/bg_fab_gradient"
-            android:scaleType="fitXY"/>
-
-        <ImageView
-            android:id="@+id/iconMain"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:layout_gravity="center"
-            android:src="@drawable/ic_mic"
-            android:tint="@color/white"/>
-    </FrameLayout>
 
 </FrameLayout>

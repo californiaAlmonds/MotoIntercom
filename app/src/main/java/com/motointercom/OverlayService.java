@@ -47,6 +47,33 @@ public class OverlayService extends Service {
 
         windowManager.addView(overlayView, params);
 
+        // Make overlay draggable
+        overlayView.setOnTouchListener(new View.OnTouchListener() {
+            private int initialX;
+            private int initialY;
+            private float initialTouchX;
+            private float initialTouchY;
+
+            @Override
+            public boolean onTouch(View v, android.view.MotionEvent event) {
+                switch (event.getAction()) {
+                    case android.view.MotionEvent.ACTION_DOWN:
+                        initialX = params.x;
+                        initialY = params.y;
+                        initialTouchX = event.getRawX();
+                        initialTouchY = event.getRawY();
+                        return true;
+
+                    case android.view.MotionEvent.ACTION_MOVE:
+                        params.x = initialX + (int) (event.getRawX() - initialTouchX);
+                        params.y = initialY + (int) (event.getRawY() - initialTouchY);
+                        windowManager.updateViewLayout(overlayView, params);
+                        return true;
+                }
+                return false;
+            }
+        });
+
         FrameLayout btnMain = overlayView.findViewById(R.id.btnMain);
         LinearLayout menuContainer = overlayView.findViewById(R.id.menuContainer);
         View btnSwitch = overlayView.findViewById(R.id.btnSwitch);

@@ -1,7 +1,10 @@
 package com.motointercom;
 
 import android.Manifest;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
@@ -24,6 +27,8 @@ public class MainActivity extends AppCompatActivity {
     private static final int OVERLAY_PERMISSION_REQUEST_CODE = 102;
     private TextView statusText;
     private View btnStartContainer, btnMiuiContainer;
+    private TextView startTitle, startDesc;
+    private boolean isServiceRunning = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,16 +38,22 @@ public class MainActivity extends AppCompatActivity {
         statusText = findViewById(R.id.statusText);
         btnStartContainer = findViewById(R.id.btnStartContainer);
         btnMiuiContainer = findViewById(R.id.btnMiuiContainer);
+        startTitle = btnStartContainer.findViewById(R.id.startTitle);
+        startDesc = btnStartContainer.findViewById(R.id.startDesc);
 
         btnStartContainer.setOnClickListener(v -> {
-            if (checkPermissions()) {
-                if (checkOverlayPermission()) {
-                    startIntercomService();
-                } else {
-                    requestOverlayPermission();
-                }
+            if (isServiceRunning) {
+                stopIntercomService();
             } else {
-                requestPermissions();
+                if (checkPermissions()) {
+                    if (checkOverlayPermission()) {
+                        startIntercomService();
+                    } else {
+                        requestOverlayPermission();
+                    }
+                } else {
+                    requestPermissions();
+                }
             }
         });
 
@@ -103,7 +114,28 @@ public class MainActivity extends AppCompatActivity {
     private void startIntercomService() {
         Intent serviceIntent = new Intent(this, IntercomService.class);
         ContextCompat.startForegroundService(this, serviceIntent);
-        statusText.setText("Intercom Service Started");
+        isServiceRunning = true;
+        updateButtonState();
+    }
+
+    private void stopIntercomService() {
+        Intent serviceIntent = new Intent(this, IntercomService.class);
+        serviceIntent.putExtra("ACTION", "STOP");
+        startService(serviceIntent);
+        isServiceRunning = false;
+        updateButtonState();
+    }
+
+    private void updateButtonState() {
+        if (isServiceRunning) {
+            startTitle.setText("Stop Intercom");
+            startDesc.setText("End voice communication");
+            statusText.setText("Active");
+        } else {
+            startTitle.setText("Start Intercom");
+            startDesc.setText("Begin voice communication");
+            statusText.setText("MotoIntercom");
+        }
     }
 
     @Override
