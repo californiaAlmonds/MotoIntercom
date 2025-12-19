@@ -1,8 +1,6 @@
 package com.motointercom;
 
 import android.Manifest;
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -10,14 +8,12 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.view.View;
-import android.view.animation.OvershootInterpolator;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,8 +23,7 @@ public class MainActivity extends AppCompatActivity {
     private static final int PERMISSION_REQUEST_CODE = 101;
     private static final int OVERLAY_PERMISSION_REQUEST_CODE = 102;
     private TextView statusText;
-    private FloatingActionButton fabMain, fabStart, fabMiui;
-    private boolean isMenuOpen = false;
+    private View btnStartContainer, btnMiuiContainer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,13 +31,10 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         statusText = findViewById(R.id.statusText);
-        fabMain = findViewById(R.id.fabMain);
-        fabStart = findViewById(R.id.fabStart);
-        fabMiui = findViewById(R.id.fabMiui);
+        btnStartContainer = findViewById(R.id.btnStartContainer);
+        btnMiuiContainer = findViewById(R.id.btnMiuiContainer);
 
-        fabMain.setOnClickListener(v -> toggleMenu());
-
-        fabStart.setOnClickListener(v -> {
+        btnStartContainer.setOnClickListener(v -> {
             if (checkPermissions()) {
                 if (checkOverlayPermission()) {
                     startIntercomService();
@@ -52,57 +44,9 @@ public class MainActivity extends AppCompatActivity {
             } else {
                 requestPermissions();
             }
-            closeMenu();
         });
 
-        fabMiui.setOnClickListener(v -> {
-            openAutoStartSettings();
-            closeMenu();
-        });
-    }
-
-    private void toggleMenu() {
-        if (isMenuOpen) {
-            closeMenu();
-        } else {
-            openMenu();
-        }
-    }
-
-    private void openMenu() {
-        isMenuOpen = true;
-        fabMain.animate().rotation(45f).setInterpolator(new OvershootInterpolator()).start();
-
-        fabStart.setVisibility(View.VISIBLE);
-        fabMiui.setVisibility(View.VISIBLE);
-
-        fabStart.animate().translationY(-getResources().getDimension(R.dimen.fab_margin_1)).alpha(1f).setDuration(300)
-                .start();
-        fabMiui.animate().translationY(-getResources().getDimension(R.dimen.fab_margin_2)).alpha(1f).setDuration(300)
-                .start();
-    }
-
-    private void closeMenu() {
-        isMenuOpen = false;
-        fabMain.animate().rotation(0f).setInterpolator(new OvershootInterpolator()).start();
-
-        fabStart.animate().translationY(0).alpha(0f).setDuration(300).setListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                super.onAnimationEnd(animation);
-                if (!isMenuOpen)
-                    fabStart.setVisibility(View.INVISIBLE);
-            }
-        }).start();
-
-        fabMiui.animate().translationY(0).alpha(0f).setDuration(300).setListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                super.onAnimationEnd(animation);
-                if (!isMenuOpen)
-                    fabMiui.setVisibility(View.INVISIBLE);
-            }
-        }).start();
+        btnMiuiContainer.setOnClickListener(v -> openAutoStartSettings());
     }
 
     private void openAutoStartSettings() {

@@ -10,7 +10,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 public class OverlayService extends Service {
 
@@ -47,8 +49,14 @@ public class OverlayService extends Service {
 
         ImageButton btnMain = overlayView.findViewById(R.id.btnMain);
         LinearLayout menuContainer = overlayView.findViewById(R.id.menuContainer);
-        ImageButton btnSwitch = overlayView.findViewById(R.id.btnSwitch);
-        ImageButton btnStop = overlayView.findViewById(R.id.btnStop);
+        View btnSwitch = overlayView.findViewById(R.id.btnSwitch);
+        View btnMute = overlayView.findViewById(R.id.btnMute);
+        View btnStop = overlayView.findViewById(R.id.btnStop);
+
+        ImageView iconMic = overlayView.findViewById(R.id.iconMic);
+        TextView textMic = overlayView.findViewById(R.id.textMic);
+        ImageView iconMute = overlayView.findViewById(R.id.iconMute);
+        TextView textMute = overlayView.findViewById(R.id.textMute);
 
         btnMain.setOnClickListener(v -> {
             if (isMenuOpen) {
@@ -64,8 +72,32 @@ public class OverlayService extends Service {
             Intent intent = new Intent(this, IntercomService.class);
             intent.putExtra("ACTION", "SWITCH_MIC");
             startService(intent);
-            menuContainer.setVisibility(View.GONE);
-            isMenuOpen = false;
+
+            // Toggle UI state locally (assuming service follows)
+            // Ideally we should listen to broadcast, but for simplicity:
+            boolean isRider = "Rider".equals(textMic.getText());
+            if (isRider) {
+                textMic.setText("Pillion");
+                iconMic.setImageResource(R.drawable.ic_headset_bt);
+            } else {
+                textMic.setText("Rider");
+                iconMic.setImageResource(R.drawable.ic_headset_wired);
+            }
+        });
+
+        btnMute.setOnClickListener(v -> {
+            Intent intent = new Intent(this, IntercomService.class);
+            intent.putExtra("ACTION", "TOGGLE_MUTE");
+            startService(intent);
+
+            boolean isMuted = "Unmute".equals(textMute.getText());
+            if (isMuted) {
+                textMute.setText("Mute");
+                iconMute.setAlpha(1.0f);
+            } else {
+                textMute.setText("Unmute");
+                iconMute.setAlpha(0.5f);
+            }
         });
 
         btnStop.setOnClickListener(v -> {

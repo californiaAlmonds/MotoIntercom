@@ -1,37 +1,99 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:gravity="center_horizontal">
 
-    <!-- Container for the expanded menu -->
+    <!-- Container for the expanded menu (Horizontal) -->
     <LinearLayout
         android:id="@+id/menuContainer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:gravity="center_horizontal"
+        android:orientation="horizontal"
         android:visibility="gone"
-        android:paddingBottom="10dp">
+        android:layout_marginBottom="12dp"
+        android:background="@drawable/bg_glass_circle"
+        android:padding="8dp">
 
-        <ImageButton
+        <!-- Switch Mic Option -->
+        <LinearLayout
             android:id="@+id/btnSwitch"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:background="@drawable/bg_glass_circle"
-            android:src="@drawable/ic_mic"
-            android:tint="@color/white"
-            android:layout_marginBottom="10dp"
-            android:elevation="4dp"/>
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:padding="8dp"
+            android:layout_marginEnd="16dp">
+            
+            <ImageView
+                android:id="@+id/iconMic"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:src="@drawable/ic_headset_wired"
+                android:tint="@color/white"/>
+            
+            <TextView
+                android:id="@+id/textMic"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Rider"
+                android:textColor="@color/white"
+                android:textSize="10sp"
+                android:layout_marginTop="4dp"/>
+        </LinearLayout>
 
-        <ImageButton
+        <!-- Mute Option -->
+        <LinearLayout
+            android:id="@+id/btnMute"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:padding="8dp"
+            android:layout_marginEnd="16dp">
+
+            <ImageView
+                android:id="@+id/iconMute"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:src="@drawable/ic_volume_off"
+                android:tint="@color/white"/>
+
+            <TextView
+                android:id="@+id/textMute"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Mute"
+                android:textColor="@color/white"
+                android:textSize="10sp"
+                android:layout_marginTop="4dp"/>
+        </LinearLayout>
+
+        <!-- Stop Option -->
+        <LinearLayout
             android:id="@+id/btnStop"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:background="@drawable/bg_glass_circle"
-            android:src="@drawable/ic_stop"
-            android:tint="@color/white"
-            android:layout_marginBottom="10dp"
-            android:elevation="4dp"/>
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:padding="8dp">
+
+            <ImageView
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:src="@drawable/ic_stop"
+                android:tint="@color/white"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Stop"
+                android:textColor="@color/white"
+                android:textSize="10sp"
+                android:layout_marginTop="4dp"/>
+        </LinearLayout>
+
     </LinearLayout>
 
     <!-- Main Toggle Button -->
@@ -42,7 +104,6 @@
         android:background="@drawable/bg_glass_circle"
         android:src="@drawable/ic_mic" 
         android:tint="@color/white"
-        android:layout_gravity="bottom|center_horizontal"
         android:elevation="6dp"/>
 
-</FrameLayout>
+</LinearLayout>

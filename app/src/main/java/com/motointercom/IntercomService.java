@@ -60,12 +60,16 @@ public class IntercomService extends Service {
         startForeground(1, notification);
     }
 
+    private boolean isMuted = false;
+
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         if (intent != null && intent.hasExtra("ACTION")) {
             String action = intent.getStringExtra("ACTION");
             if ("SWITCH_MIC".equals(action)) {
                 switchMic();
+            } else if ("TOGGLE_MUTE".equals(action)) {
+                toggleMute();
             } else if ("STOP".equals(action)) {
                 stopSelf();
             }
@@ -79,7 +83,35 @@ public class IntercomService extends Service {
 
     private void switchMic() {
         riderIsMic = !riderIsMic;
-        restartAudioLoop();
+        if (!isMuted) {
+            restartAudioLoop();
+        }
+    }
+    
+    private void toggleMute() {
+        isMuted = !isMuted;
+        if (isMuted) {
+            // Stop Audio Loop and Release Mode
+            isRunning = false;
+            try {
+                if (audioThread != null) {
+                    audioThread.join();
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            // Explicitly clear mode here as loop thread finishes
+            audioManager.setMode(AudioManager.MODE_NORMAL);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                audioManager.clearCommunicationDevice();
+            } else {
+                audioManager.setBluetoothScoOn(false);
+                audioManager.stopBluetoothSco();
+            }
+        } else {
+            // Resume Audio Loop
+            startAudioLoop();
+        }
     }
 
     private void restartAudioLoop() {
@@ -96,6 +128,10 @@ public class IntercomService extends Service {
 
     private void startAudioLoop() {
         isRunning = true;
+        
+        // Set Audio Mode to Communication to enable SCO/Voice routing
+        audioManager.setMode(AudioManager.MODE_IN_COMMUNICATION);
+
         audioThread = new Thread(this::audioLoop);
         audioThread.start();
     }
@@ -114,35 +150,48 @@ public class IntercomService extends Service {
         // 1. Determine Devices
         AudioDeviceInfo wiredHeadset = null;
         AudioDeviceInfo btHeadset = null;
-        AudioDeviceInfo btA2dp = null;
 
         for (AudioDeviceInfo device : audioManager.getDevices(AudioManager.GET_DEVICES_ALL)) {
             if (device.getType() == AudioDeviceInfo.TYPE_WIRED_HEADSET
                     || device.getType() == AudioDeviceInfo.TYPE_WIRED_HEADPHONES) {
                 wiredHeadset = device;
-            } else if (device.getType() == AudioDeviceInfo.TYPE_BLUETOOTH_SCO) {
+            } else if (device.getType() == AudioDeviceInfo.TYPE_BLUETOOTH_SCO
+                    || device.getType() == AudioDeviceInfo.TYPE_BLUETOOTH_HEADSET) {
                 btHeadset = device;
-            } else if (device.getType() == AudioDeviceInfo.TYPE_BLUETOOTH_A2DP) {
-                btA2dp = device;
             }
         }
 
-        // 2. Configure Routing
+        // 2. Configure Routing & Communication Device
         AudioDeviceInfo inputDevice;
         AudioDeviceInfo outputDevice;
 
         if (riderIsMic) {
             // Rider Speaking (Wired Mic) -> Pillion Hearing (BT)
             inputDevice = wiredHeadset;
-            outputDevice = btA2dp != null ? btA2dp : btHeadset;
+            outputDevice = btHeadset;
+            
+            // Set Communication Device to Wired to ensure Wired Mic is active
+            // We will force Output to BT via AudioTrack
+            if (wiredHeadset != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                 audioManager.setCommunicationDevice(wiredHeadset);
+            }
         } else {
             // Pillion Speaking (BT Mic) -> Rider Hearing (Wired)
             inputDevice = btHeadset;
             outputDevice = wiredHeadset;
+
+            // Set Communication Device to BT to activate SCO (BT Mic)
+            if (btHeadset != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                audioManager.setCommunicationDevice(btHeadset);
+            } else {
+                // Fallback for older Android (though we target 33)
+                audioManager.startBluetoothSco();
+                audioManager.setBluetoothScoOn(true);
+            }
         }
 
         // 3. Setup AudioRecord
-        audioRecord = new AudioRecord(MediaRecorder.AudioSource.MIC, SAMPLE_RATE, AudioFormat.CHANNEL_IN_MONO,
+        audioRecord = new AudioRecord(MediaRecorder.AudioSource.VOICE_COMMUNICATION, SAMPLE_RATE, AudioFormat.CHANNEL_IN_MONO,
                 AudioFormat.ENCODING_PCM_16BIT, bufferSize);
 
         if (inputDevice != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -152,7 +201,7 @@ public class IntercomService extends Service {
         // 4. Setup AudioTrack
         audioTrack = new AudioTrack.Builder()
                 .setAudioAttributes(new AudioAttributes.Builder()
-                        .setUsage(AudioAttributes.USAGE_MEDIA)
+                        .setUsage(AudioAttributes.USAGE_VOICE_COMMUNICATION)
                         .setContentType(AudioAttributes.CONTENT_TYPE_SPEECH)
                         .build())
                 .setAudioFormat(new AudioFormat.Builder()
@@ -194,6 +243,15 @@ public class IntercomService extends Service {
         audioRecord.release();
         audioTrack.stop();
         audioTrack.release();
+        
+        // Cleanup Audio Mode
+        audioManager.setMode(AudioManager.MODE_NORMAL);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            audioManager.clearCommunicationDevice();
+        } else {
+            audioManager.setBluetoothScoOn(false);
+            audioManager.stopBluetoothSco();
+        }
     }
 
     @Override
