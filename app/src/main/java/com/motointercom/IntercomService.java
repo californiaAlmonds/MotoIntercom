@@ -155,8 +155,7 @@ public class IntercomService extends Service {
             if (device.getType() == AudioDeviceInfo.TYPE_WIRED_HEADSET
                     || device.getType() == AudioDeviceInfo.TYPE_WIRED_HEADPHONES) {
                 wiredHeadset = device;
-            } else if (device.getType() == AudioDeviceInfo.TYPE_BLUETOOTH_SCO
-                    || device.getType() == AudioDeviceInfo.TYPE_BLUETOOTH_HEADSET) {
+            } else if (device.getType() == AudioDeviceInfo.TYPE_BLUETOOTH_SCO) {
                 btHeadset = device;
             }
         }
