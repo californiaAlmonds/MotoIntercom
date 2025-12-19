@@ -4,36 +4,66 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/bg_main_gradient"
     tools:context=".MainActivity">
 
     <TextView
         android:id="@+id/statusText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Moto Intercom Stopped"
+        android:text="Moto Intercom"
+        android:textColor="@color/white"
+        android:textSize="24sp"
+        android:fontFamily="sans-serif-light"
+        android:letterSpacing="0.1"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.3" />
 
-    <Button
-        android:id="@+id/btnStart"
+    <!-- Sub FAB: Start Intercom -->
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabStart"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Start Intercom"
-        app:layout_constraintTop_toBottomOf="@id/statusText"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginTop="20dp"/>
+        android:src="@drawable/ic_mic"
+        android:layout_marginBottom="16dp"
+        app:backgroundTint="@color/glass_surface"
+        app:tint="@color/white"
+        app:borderWidth="0dp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@id/fabMain"
+        app:layout_constraintEnd_toEndOf="@id/fabMain"
+        app:layout_constraintStart_toStartOf="@id/fabMain" />
 
-    <Button
-        android:id="@+id/btnMiui"
+    <!-- Sub FAB: MIUI Settings -->
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabMiui"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="MIUI Settings"
-        app:layout_constraintTop_toBottomOf="@id/btnStart"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginTop="20dp"/>
+        android:src="@drawable/ic_settings"
+        android:layout_marginBottom="16dp"
+        app:backgroundTint="@color/glass_surface"
+        app:tint="@color/white"
+        app:borderWidth="0dp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@id/fabStart"
+        app:layout_constraintEnd_toEndOf="@id/fabMain"
+        app:layout_constraintStart_toStartOf="@id/fabMain" />
+
+    <!-- Main FAB -->
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabMain"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="32dp"
+        android:src="@drawable/ic_add"
+        app:backgroundTint="@color/glass_surface"
+        app:tint="@color/white"
+        app:borderWidth="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

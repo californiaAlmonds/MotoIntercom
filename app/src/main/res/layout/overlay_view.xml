@@ -1,21 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:background="#AA000000"
-    android:padding="10dp">
+    android:layout_height="wrap_content">
 
-    <Button
-        android:id="@+id/btnSwitch"
+    <!-- Container for the expanded menu -->
+    <LinearLayout
+        android:id="@+id/menuContainer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Switch Mic" />
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
+        android:visibility="gone"
+        android:paddingBottom="10dp">
 
-    <Button
-        android:id="@+id/btnStop"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Stop" />
+        <ImageButton
+            android:id="@+id/btnSwitch"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="@drawable/bg_glass_circle"
+            android:src="@drawable/ic_mic"
+            android:tint="@color/white"
+            android:layout_marginBottom="10dp"
+            android:elevation="4dp"/>
 
-</LinearLayout>
+        <ImageButton
+            android:id="@+id/btnStop"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="@drawable/bg_glass_circle"
+            android:src="@drawable/ic_stop"
+            android:tint="@color/white"
+            android:layout_marginBottom="10dp"
+            android:elevation="4dp"/>
+    </LinearLayout>
+
+    <!-- Main Toggle Button -->
+    <ImageButton
+        android:id="@+id/btnMain"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:background="@drawable/bg_glass_circle"
+        android:src="@drawable/ic_mic" 
+        android:tint="@color/white"
+        android:layout_gravity="bottom|center_horizontal"
+        android:elevation="6dp"/>
+
+</FrameLayout>

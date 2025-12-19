@@ -7,4 +7,12 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    
+    <!-- Frost / Glass Colors -->
+    <color name="glass_surface">#26FFFFFF</color> <!-- 15% White -->
+    <color name="glass_border">#4DFFFFFF</color>  <!-- 30% White -->
+    <color name="glass_text">#FFFFFFFF</color>
+    <color name="neon_accent">#00E5FF</color>     <!-- Cyan Accent -->
+    <color name="bg_gradient_start">#0F2027</color>
+    <color name="bg_gradient_end">#2C5364</color>
 </resources>

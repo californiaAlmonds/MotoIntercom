@@ -9,12 +9,14 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
 
 public class OverlayService extends Service {
 
     private WindowManager windowManager;
     private View overlayView;
+    private boolean isMenuOpen = false;
 
     @Override
     public void onCreate() {
@@ -43,13 +45,27 @@ public class OverlayService extends Service {
 
         windowManager.addView(overlayView, params);
 
-        Button btnSwitch = overlayView.findViewById(R.id.btnSwitch);
-        Button btnStop = overlayView.findViewById(R.id.btnStop);
+        ImageButton btnMain = overlayView.findViewById(R.id.btnMain);
+        LinearLayout menuContainer = overlayView.findViewById(R.id.menuContainer);
+        ImageButton btnSwitch = overlayView.findViewById(R.id.btnSwitch);
+        ImageButton btnStop = overlayView.findViewById(R.id.btnStop);
+
+        btnMain.setOnClickListener(v -> {
+            if (isMenuOpen) {
+                menuContainer.setVisibility(View.GONE);
+                isMenuOpen = false;
+            } else {
+                menuContainer.setVisibility(View.VISIBLE);
+                isMenuOpen = true;
+            }
+        });
 
         btnSwitch.setOnClickListener(v -> {
             Intent intent = new Intent(this, IntercomService.class);
             intent.putExtra("ACTION", "SWITCH_MIC");
             startService(intent);
+            menuContainer.setVisibility(View.GONE);
+            isMenuOpen = false;
         });
 
         btnStop.setOnClickListener(v -> {

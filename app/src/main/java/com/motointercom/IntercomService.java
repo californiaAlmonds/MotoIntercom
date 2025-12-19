@@ -54,7 +54,7 @@ public class IntercomService extends Service {
         Notification notification = new NotificationCompat.Builder(this, channelId)
                 .setContentTitle("Moto Intercom")
                 .setContentText("Intercom is running")
-                .setSmallIcon(R.mipmap.ic_launcher)
+                .setSmallIcon(android.R.drawable.sym_def_app_icon)
                 .build();
 
         startForeground(1, notification);
@@ -120,8 +120,7 @@ public class IntercomService extends Service {
             if (device.getType() == AudioDeviceInfo.TYPE_WIRED_HEADSET
                     || device.getType() == AudioDeviceInfo.TYPE_WIRED_HEADPHONES) {
                 wiredHeadset = device;
-            } else if (device.getType() == AudioDeviceInfo.TYPE_BLUETOOTH_SCO
-                    || device.getType() == AudioDeviceInfo.TYPE_BLUETOOTH_HEADSET) {
+            } else if (device.getType() == AudioDeviceInfo.TYPE_BLUETOOTH_SCO) {
                 btHeadset = device;
             } else if (device.getType() == AudioDeviceInfo.TYPE_BLUETOOTH_A2DP) {
                 btA2dp = device;
