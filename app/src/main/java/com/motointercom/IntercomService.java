@@ -136,6 +136,9 @@ public class IntercomService extends Service {
         audioThread.start();
     }
 
+    private AudioTrack audioTrackWired;
+    private AudioTrack audioTrackBT;
+
     private void audioLoop() {
         int bufferSize = AudioRecord.getMinBufferSize(SAMPLE_RATE, AudioFormat.CHANNEL_IN_MONO,
                 AudioFormat.ENCODING_PCM_16BIT);
@@ -160,33 +163,21 @@ public class IntercomService extends Service {
             }
         }
 
-        // 2. Configure Routing & Communication Device
+        // 2. Configure Input Routing (Mic Selection)
         AudioDeviceInfo inputDevice;
-        AudioDeviceInfo outputDevice;
-
         if (riderIsMic) {
-            // Rider Speaking (Wired Mic) -> Pillion Hearing (BT)
             inputDevice = wiredHeadset;
-            outputDevice = btHeadset;
-            
-            // Set Communication Device to Wired to ensure Wired Mic is active
-            // We will force Output to BT via AudioTrack
-            if (wiredHeadset != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                 audioManager.setCommunicationDevice(wiredHeadset);
-            }
         } else {
-            // Pillion Speaking (BT Mic) -> Rider Hearing (Wired)
             inputDevice = btHeadset;
-            outputDevice = wiredHeadset;
+        }
 
-            // Set Communication Device to BT to activate SCO (BT Mic)
-            if (btHeadset != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                audioManager.setCommunicationDevice(btHeadset);
-            } else {
-                // Fallback for older Android (though we target 33)
-                audioManager.startBluetoothSco();
-                audioManager.setBluetoothScoOn(true);
-            }
+        // Set Communication Device to Input Device to ensure Mic is active
+        if (inputDevice != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+             audioManager.setCommunicationDevice(inputDevice);
+        } else if (!riderIsMic) {
+            // Fallback for BT Mic on older Android
+            audioManager.startBluetoothSco();
+            audioManager.setBluetoothScoOn(true);
         }
 
         // 3. Setup AudioRecord
@@ -197,23 +188,40 @@ public class IntercomService extends Service {
             audioRecord.setPreferredDevice(inputDevice);
         }
 
-        // 4. Setup AudioTrack
-        audioTrack = new AudioTrack.Builder()
-                .setAudioAttributes(new AudioAttributes.Builder()
-                        .setUsage(AudioAttributes.USAGE_VOICE_COMMUNICATION)
-                        .setContentType(AudioAttributes.CONTENT_TYPE_SPEECH)
-                        .build())
-                .setAudioFormat(new AudioFormat.Builder()
-                        .setEncoding(AudioFormat.ENCODING_PCM_16BIT)
-                        .setSampleRate(SAMPLE_RATE)
-                        .setChannelMask(AudioFormat.CHANNEL_OUT_MONO)
-                        .build())
+        // 4. Setup Dual AudioTracks (Experimental)
+        AudioFormat format = new AudioFormat.Builder()
+                .setEncoding(AudioFormat.ENCODING_PCM_16BIT)
+                .setSampleRate(SAMPLE_RATE)
+                .setChannelMask(AudioFormat.CHANNEL_OUT_MONO)
+                .build();
+
+        AudioAttributes attributes = new AudioAttributes.Builder()
+                .setUsage(AudioAttributes.USAGE_VOICE_COMMUNICATION)
+                .setContentType(AudioAttributes.CONTENT_TYPE_SPEECH)
+                .build();
+
+        // Track 1: Wired
+        audioTrackWired = new AudioTrack.Builder()
+                .setAudioAttributes(attributes)
+                .setAudioFormat(format)
+                .setBufferSizeInBytes(bufferSize)
+                .setTransferMode(AudioTrack.MODE_STREAM)
+                .build();
+        
+        if (wiredHeadset != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            audioTrackWired.setPreferredDevice(wiredHeadset);
+        }
+
+        // Track 2: Bluetooth
+        audioTrackBT = new AudioTrack.Builder()
+                .setAudioAttributes(attributes)
+                .setAudioFormat(format)
                 .setBufferSizeInBytes(bufferSize)
                 .setTransferMode(AudioTrack.MODE_STREAM)
                 .build();
 
-        if (outputDevice != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            audioTrack.setPreferredDevice(outputDevice);
+        if (btHeadset != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            audioTrackBT.setPreferredDevice(btHeadset);
         }
 
         // 5. Noise Suppression
@@ -228,20 +236,27 @@ public class IntercomService extends Service {
         }
 
         audioRecord.startRecording();
-        audioTrack.play();
+        audioTrackWired.play();
+        audioTrackBT.play();
 
         byte[] buffer = new byte[bufferSize];
         while (isRunning) {
             int read = audioRecord.read(buffer, 0, bufferSize);
             if (read > 0) {
-                audioTrack.write(buffer, 0, read);
+                // Write to BOTH tracks
+                audioTrackWired.write(buffer, 0, read);
+                audioTrackBT.write(buffer, 0, read);
             }
         }
 
         audioRecord.stop();
         audioRecord.release();
-        audioTrack.stop();
-        audioTrack.release();
+        
+        audioTrackWired.stop();
+        audioTrackWired.release();
+        
+        audioTrackBT.stop();
+        audioTrackBT.release();
         
         // Cleanup Audio Mode
         audioManager.setMode(AudioManager.MODE_NORMAL);
