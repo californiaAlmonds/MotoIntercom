@@ -9,7 +9,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.ImageButton;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -47,7 +47,7 @@ public class OverlayService extends Service {
 
         windowManager.addView(overlayView, params);
 
-        ImageButton btnMain = overlayView.findViewById(R.id.btnMain);
+        FrameLayout btnMain = overlayView.findViewById(R.id.btnMain);
         LinearLayout menuContainer = overlayView.findViewById(R.id.menuContainer);
         View btnSwitch = overlayView.findViewById(R.id.btnSwitch);
         View btnMute = overlayView.findViewById(R.id.btnMute);
@@ -57,14 +57,13 @@ public class OverlayService extends Service {
         TextView textMic = overlayView.findViewById(R.id.textMic);
         ImageView iconMute = overlayView.findViewById(R.id.iconMute);
         TextView textMute = overlayView.findViewById(R.id.textMute);
+        ImageView iconMain = overlayView.findViewById(R.id.iconMain);
 
         btnMain.setOnClickListener(v -> {
             if (isMenuOpen) {
-                menuContainer.setVisibility(View.GONE);
-                isMenuOpen = false;
+                closeMenuWithAnimation(menuContainer, iconMain);
             } else {
-                menuContainer.setVisibility(View.VISIBLE);
-                isMenuOpen = true;
+                openMenuWithAnimation(menuContainer, iconMain);
             }
         });
 
@@ -73,8 +72,6 @@ public class OverlayService extends Service {
             intent.putExtra("ACTION", "SWITCH_MIC");
             startService(intent);
 
-            // Toggle UI state locally (assuming service follows)
-            // Ideally we should listen to broadcast, but for simplicity:
             boolean isRider = "Rider".equals(textMic.getText());
             if (isRider) {
                 textMic.setText("Pillion");
@@ -106,6 +103,43 @@ public class OverlayService extends Service {
             startService(intent);
             stopSelf();
         });
+    }
+
+    private void openMenuWithAnimation(LinearLayout menu, ImageView icon) {
+        isMenuOpen = true;
+        menu.setVisibility(View.VISIBLE);
+
+        android.view.animation.Animation popupAnim = android.view.animation.AnimationUtils.loadAnimation(this,
+                R.anim.popup_show);
+        menu.startAnimation(popupAnim);
+
+        // Rotate main icon
+        icon.animate().rotation(135f).setDuration(200).start();
+    }
+
+    private void closeMenuWithAnimation(LinearLayout menu, ImageView icon) {
+        isMenuOpen = false;
+
+        android.view.animation.Animation hideAnim = android.view.animation.AnimationUtils.loadAnimation(this,
+                R.anim.popup_hide);
+        hideAnim.setAnimationListener(new android.view.animation.Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(android.view.animation.Animation animation) {
+            }
+
+            @Override
+            public void onAnimationEnd(android.view.animation.Animation animation) {
+                menu.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onAnimationRepeat(android.view.animation.Animation animation) {
+            }
+        });
+        menu.startAnimation(hideAnim);
+
+        // Rotate main icon back
+        icon.animate().rotation(0f).setDuration(200).start();
     }
 
     @Override

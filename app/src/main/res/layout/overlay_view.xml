@@ -1,62 +1,72 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:gravity="center_horizontal">
+    android:layout_height="wrap_content">
 
-    <!-- Container for the expanded menu (Horizontal) -->
+    <!-- Expandable Menu Items Container -->
     <LinearLayout
         android:id="@+id/menuContainer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
         android:visibility="gone"
-        android:layout_marginBottom="12dp"
-        android:background="@drawable/bg_glass_circle"
-        android:padding="8dp">
+        android:layout_marginBottom="16dp">
 
-        <!-- Switch Mic Option -->
-        <LinearLayout
+        <!-- Mic Switch Button -->
+        <FrameLayout
             android:id="@+id/btnSwitch"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:gravity="center"
-            android:padding="8dp"
-            android:layout_marginEnd="16dp">
-            
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:layout_marginBottom="12dp">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/bg_glass_circle"
+                android:scaleType="fitXY"/>
+
             <ImageView
                 android:id="@+id/iconMic"
                 android:layout_width="32dp"
                 android:layout_height="32dp"
+                android:layout_gravity="center"
                 android:src="@drawable/ic_headset_wired"
                 android:tint="@color/white"/>
-            
+
             <TextView
                 android:id="@+id/textMic"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Rider"
                 android:textColor="@color/white"
-                android:textSize="10sp"
-                android:layout_marginTop="4dp"/>
-        </LinearLayout>
+                android:textSize="9sp"
+                android:fontFamily="sans-serif-medium"
+                android:layout_gravity="bottom|center_horizontal"
+                android:layout_marginBottom="2dp"
+                android:background="#80000000"
+                android:paddingHorizontal="4dp"
+                android:paddingVertical="1dp"/>
+        </FrameLayout>
 
-        <!-- Mute Option -->
-        <LinearLayout
+        <!-- Mute Button -->
+        <FrameLayout
             android:id="@+id/btnMute"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:gravity="center"
-            android:padding="8dp"
-            android:layout_marginEnd="16dp">
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:layout_marginBottom="12dp">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/bg_glass_circle"
+                android:scaleType="fitXY"/>
 
             <ImageView
                 android:id="@+id/iconMute"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:layout_gravity="center"
                 android:src="@drawable/ic_volume_off"
                 android:tint="@color/white"/>
 
@@ -66,44 +76,71 @@
                 android:layout_height="wrap_content"
                 android:text="Mute"
                 android:textColor="@color/white"
-                android:textSize="10sp"
-                android:layout_marginTop="4dp"/>
-        </LinearLayout>
+                android:textSize="9sp"
+                android:fontFamily="sans-serif-medium"
+                android:layout_gravity="bottom|center_horizontal"
+                android:layout_marginBottom="2dp"
+                android:background="#80000000"
+                android:paddingHorizontal="4dp"
+                android:paddingVertical="1dp"/>
+        </FrameLayout>
 
-        <!-- Stop Option -->
-        <LinearLayout
+        <!-- Stop Button -->
+        <FrameLayout
             android:id="@+id/btnStop"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:gravity="center"
-            android:padding="8dp">
+            android:layout_width="56dp"
+            android:layout_height="56dp">
 
             <ImageView
-                android:layout_width="32dp"
-                android:layout_height="32dp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/bg_glass_circle"
+                android:scaleType="fitXY"/>
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_gravity="center"
                 android:src="@drawable/ic_stop"
-                android:tint="@color/white"/>
+                android:tint="@color/accent_danger"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Stop"
                 android:textColor="@color/white"
-                android:textSize="10sp"
-                android:layout_marginTop="4dp"/>
-        </LinearLayout>
+                android:textSize="9sp"
+                android:fontFamily="sans-serif-medium"
+                android:layout_gravity="bottom|center_horizontal"
+                android:layout_marginBottom="2dp"
+                android:background="#80000000"
+                android:paddingHorizontal="4dp"
+                android:paddingVertical="1dp"/>
+        </FrameLayout>
 
     </LinearLayout>
 
-    <!-- Main Toggle Button -->
-    <ImageButton
+    <!-- Main FAB Button -->
+    <FrameLayout
         android:id="@+id/btnMain"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:background="@drawable/bg_glass_circle"
-        android:src="@drawable/ic_mic" 
-        android:tint="@color/white"
-        android:elevation="6dp"/>
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:layout_gravity="bottom|center_horizontal"
+        android:elevation="8dp">
 
-</LinearLayout>
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/bg_fab_gradient"
+            android:scaleType="fitXY"/>
+
+        <ImageView
+            android:id="@+id/iconMain"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_gravity="center"
+            android:src="@drawable/ic_mic"
+            android:tint="@color/white"/>
+    </FrameLayout>
+
+</FrameLayout>

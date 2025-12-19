@@ -5,83 +5,149 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/bg_main_gradient"
-    android:padding="24dp"
     tools:context=".MainActivity">
 
+    <!-- App Title -->
     <TextView
         android:id="@+id/statusText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Moto Intercom"
+        android:text="MotoIntercom"
         android:textColor="@color/white"
-        android:textSize="32sp"
+        android:textSize="36sp"
         android:fontFamily="sans-serif-light"
-        android:letterSpacing="0.05"
+        android:letterSpacing="0.02"
+        android:layout_marginTop="60dp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="48dp" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
+    <!-- Subtitle -->
+    <TextView
+        android:id="@+id/subtitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Rider • Pillion Communication"
+        android:textColor="#99FFFFFF"
+        android:textSize="14sp"
+        android:fontFamily="sans-serif"
+        android:letterSpacing="0.05"
+        android:layout_marginTop="4dp"
+        app:layout_constraintTop_toBottomOf="@id/statusText"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- Cards Container -->
     <LinearLayout
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintTop_toBottomOf="@id/statusText"
+        android:layout_marginHorizontal="24dp"
+        android:layout_marginVertical="32dp"
+        app:layout_constraintTop_toBottomOf="@id/subtitle"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:gravity="center">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintVertical_bias="0.35">
 
-        <!-- Start Button Container -->
-        <LinearLayout
+        <!-- Start Intercom Card -->
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/btnStartContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:background="@drawable/bg_glass_circle"
-            android:padding="16dp"
-            android:layout_marginBottom="24dp">
+            android:background="@drawable/bg_glass_card"
+            android:padding="20dp"
+            android:layout_marginBottom="16dp"
+            android:clickable="true"
+            android:focusable="true">
 
             <ImageView
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                android:id="@+id/iconStart"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
                 android:src="@drawable/ic_mic"
-                app:tint="@color/white" />
+                app:tint="@color/accent_primary"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"/>
 
-            <TextView
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="Start Intercom"
-                android:textColor="@color/white"
-                android:textSize="18sp"
+                android:orientation="vertical"
                 android:layout_marginStart="16dp"
-                android:fontFamily="sans-serif-medium"/>
-        </LinearLayout>
+                app:layout_constraintTop_toTopOf="@id/iconStart"
+                app:layout_constraintBottom_toBottomOf="@id/iconStart"
+                app:layout_constraintStart_toEndOf="@id/iconStart"
+                app:layout_constraintEnd_toEndOf="parent">
 
-        <!-- MIUI Settings Container -->
-        <LinearLayout
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Start Intercom"
+                    android:textColor="@color/white"
+                    android:textSize="18sp"
+                    android:fontFamily="sans-serif-medium"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Begin voice communication"
+                    android:textColor="#80FFFFFF"
+                    android:textSize="13sp"
+                    android:layout_marginTop="2dp"/>
+            </LinearLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <!-- MIUI Settings Card -->
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/btnMiuiContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:background="@drawable/bg_glass_circle"
-            android:padding="16dp">
+            android:background="@drawable/bg_glass_card"
+            android:padding="20dp"
+            android:clickable="true"
+            android:focusable="true">
 
             <ImageView
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                android:id="@+id/iconSettings"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
                 android:src="@drawable/ic_settings"
-                app:tint="@color/white" />
+                app:tint="@color/accent_secondary"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"/>
 
-            <TextView
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="MIUI Settings"
-                android:textColor="@color/white"
-                android:textSize="18sp"
+                android:orientation="vertical"
                 android:layout_marginStart="16dp"
-                android:fontFamily="sans-serif-medium"/>
-        </LinearLayout>
+                app:layout_constraintTop_toTopOf="@id/iconSettings"
+                app:layout_constraintBottom_toBottomOf="@id/iconSettings"
+                app:layout_constraintStart_toEndOf="@id/iconSettings"
+                app:layout_constraintEnd_toEndOf="parent">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="MIUI Settings"
+                    android:textColor="@color/white"
+                    android:textSize="18sp"
+                    android:fontFamily="sans-serif-medium"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Configure auto-start permissions"
+                    android:textColor="#80FFFFFF"
+                    android:textSize="13sp"
+                    android:layout_marginTop="2dp"/>
+            </LinearLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </LinearLayout>
 
