@@ -44,6 +44,20 @@ public class MainActivity extends AppCompatActivity {
                 requestPermissions();
             }
         });
+
+        Button btnMiui = findViewById(R.id.btnMiui);
+        btnMiui.setOnClickListener(v -> openAutoStartSettings());
+    }
+
+    private void openAutoStartSettings() {
+        try {
+            Intent intent = new Intent();
+            intent.setComponent(new android.content.ComponentName("com.miui.securitycenter",
+                    "com.miui.permcenter.autostart.AutoStartManagementActivity"));
+            startActivity(intent);
+        } catch (Exception e) {
+            Toast.makeText(this, "Not a MIUI device or setting not found", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private boolean checkPermissions() {
